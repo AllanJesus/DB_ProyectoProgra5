@@ -6,8 +6,8 @@ create table Admision
 (
 	id_admision int identity(1,1) not null, 
 	id_persona int,
-	nota int,
-	promedio int,
+	nota float,
+	promedio float,
 	estado varchar(50) 
 );
 
