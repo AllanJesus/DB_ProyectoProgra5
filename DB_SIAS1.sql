@@ -14,7 +14,7 @@ create table Admision
 Go
 create table Detalle_Admision
 (
-	id_detalle int not null,
+	id_detalle int identity(1,1) not null,
 	id_admision int,
 	id_accionafirmativa int,
 	puntosaccion int,
@@ -35,7 +35,7 @@ create table AccionAfirmativa
 Go
 create table Acciones_Detalles_Admision
 (
-	id_detalle int identity(1,1) not null,
+	id_detalle int  not null,
 	id_accionafirmativa int not null
 );
 
