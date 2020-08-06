@@ -25,6 +25,10 @@ Go
 create table AccionAfirmativa
 (
 	id_accionafirmativa int identity(1,1) not null,
+	puntos int,
+	Poblaciones varchar,
+	Documentos varchar,
+	lugar varchar,
 	descripcion varchar (50)not null
 );
 
@@ -87,14 +91,6 @@ create table Tipo_Telefonos
 (
 	id_tipo_telefono int not null,
 	descripcion varchar (50)
-);
-
-Go
-create table Direccion
-(
-	id_direccion int not null,
-	id_Persona int not null
-
 );
 
 Go
