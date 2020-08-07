@@ -17,8 +17,7 @@ create table Detalle_Admision
 	id_detalle int identity(1,1) not null,
 	id_admision int,
 	id_accionafirmativa int,
-	puntosaccion int,
-	estado bit
+	puntosaccion int
 );
 
 Go
