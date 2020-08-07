@@ -71,7 +71,7 @@ create table Usuario_Perfil
 Go
 create table Perfil
 (
-	id_perfil int not null,
+	id_perfil int identity(1,1) not null,
 	descripcion varchar not null,
 	estado bit not null,
 );
