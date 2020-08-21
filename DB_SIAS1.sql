@@ -1,5 +1,6 @@
 create database DB_SIAS 
 Use DB_SIAS 
+set dateformat dmy
 
 Go
 create table Admision
@@ -50,14 +51,15 @@ create table Persona
 	correo varchar(50)
 );
 
+insert into Persona values (id_persona, nombre, apellido1, apellido2, fecha_nacimiento, edad,correo)
+
 Go
 create table Usuario
 (	
-	id_usuario int identity(1,1) not null,
+	id_usuario int not null,
 	id_persona int,
 	correo varchar(50)not null,
 	contraseña varchar(50)not null,
-	codigo varchar(50)not null,
 	estado bit 
 );
 
@@ -71,8 +73,8 @@ create table Usuario_Perfil
 Go
 create table Perfil
 (
-	id_perfil int identity(1,1) not null,
-	descripcion varchar not null,
+	id_perfil int not null,
+	descripcion varchar(25) not null,
 	estado bit not null,
 );
 
@@ -92,51 +94,120 @@ create table Tipo_Telefonos
 	descripcion varchar (50)
 );
 
-Go
-create table Provincia
-(
-	id_prov	 int NOT NULL,
-	descripcion	varchar(50)
-);
 
-Go
-create table Canton
-(
-	id_prov int NOT NULL,
-	id_can  int NOT NULL,
-	descripcion	varchar(50)
-);
 
-Go
-create table Distrito
+CREATE TABLE [dbo].[PROVINCIAS](
+	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
+	[DSC_CORTA_PROVINCIA] [nvarchar](255) NULL,
+	[DSC_PROVINCIA] [nvarchar](255) NULL,
+	[LOG_ACTIVO] [numeric](1, 0) NULL,
+ CONSTRAINT [PK_PROVINCIAS] PRIMARY KEY CLUSTERED 
 (
-	id_prov int NOT NULL,
-	id_can  int NOT NULL,
-	id_dis  int NOT NULL,
-	descripcion	varchar(50)
-);
+	[COD_PROVINCIA] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 
-Go
-create table Barrio
-(	
-	id_prov int NOT NULL,
-	id_can  int NOT NULL,
-	id_dis  int NOT NULL,
-	id_bar  int NOT NULL,
-	descripcion	varchar(50)
-);
 
-Go
-create table Otra_senas
+CREATE TABLE [dbo].[CANTONES](
+	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
+	[COD_CANTON] [numeric](2, 0) NOT NULL,
+	[DSC_CANTON] [nvarchar](255) NULL,
+	[LOG_ACTIVO] [numeric](1, 0) NULL,
+ CONSTRAINT [PK_CANTONES] PRIMARY KEY CLUSTERED 
 (
-	id_prov int NOT NULL,
-	id_can  int NOT NULL,
-	id_dis  int NOT NULL,
-	id_bar  int NOT NULL,
-	id_otras int NOT NULL,
-	id_persona int,
-	descripcion	varchar(50)
-);
+	[COD_PROVINCIA] ASC,
+	[COD_CANTON] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[CANTONES]  WITH CHECK ADD  CONSTRAINT [FK_CANTONES_PROVINCIAS] FOREIGN KEY([COD_PROVINCIA])
+REFERENCES [dbo].[PROVINCIAS] ([COD_PROVINCIA])
+GO
+
+ALTER TABLE [dbo].[CANTONES] CHECK CONSTRAINT [FK_CANTONES_PROVINCIAS]
+GO
+
+
+
+CREATE TABLE [dbo].[DISTRITOS](
+	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
+	[COD_CANTON] [numeric](2, 0) NOT NULL,
+	[COD_DISTRITO] [numeric](3, 0) NOT NULL,
+	[DSC_DISTRITO] [nvarchar](255) NULL,
+	[LOG_ACTIVO] [numeric](1, 0) NULL,
+ CONSTRAINT [PK_DISTRITOS] PRIMARY KEY CLUSTERED 
+(
+	[COD_PROVINCIA] ASC,
+	[COD_CANTON] ASC,
+	[COD_DISTRITO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[DISTRITOS]  WITH CHECK ADD  CONSTRAINT [FK_DISTRITOS_CANTONES] FOREIGN KEY([COD_PROVINCIA], [COD_CANTON])
+REFERENCES [dbo].[CANTONES] ([COD_PROVINCIA], [COD_CANTON])
+GO
+
+ALTER TABLE [dbo].[DISTRITOS] CHECK CONSTRAINT [FK_DISTRITOS_CANTONES]
+GO
+
+CREATE TABLE [dbo].[BARRIO](
+	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
+	[COD_CANTON] [numeric](2, 0) NOT NULL,
+	[COD_DISTRITO] [numeric](3, 0) NOT NULL,
+	[COD_BARRIO] [numeric](4, 0) NOT NULL,
+	[DSC_BARRIO] [nvarchar](255) NULL,
+	[LOG_ACTIVO] [numeric](1, 0) NULL,
+ CONSTRAINT [PK_BARRIO] PRIMARY KEY CLUSTERED 
+(
+	[COD_PROVINCIA] ASC,
+	[COD_CANTON] ASC,
+	[COD_DISTRITO] ASC,
+	[COD_BARRIO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[BARRIO]  WITH CHECK ADD  CONSTRAINT [FK_BARRIO_DISTRITOS] FOREIGN KEY([COD_PROVINCIA], [COD_CANTON], [COD_DISTRITO])
+REFERENCES [dbo].[DISTRITOS] ([COD_PROVINCIA], [COD_CANTON], [COD_DISTRITO])
+GO
+
+ALTER TABLE [dbo].[BARRIO] CHECK CONSTRAINT [FK_BARRIO_DISTRITOS]
+GO
+
+create table [dbo].[OTRAS_SENAS]
+(
+	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
+	[COD_CANTON] [numeric](2, 0) NOT NULL,
+	[COD_DISTRITO] [numeric](3, 0) NOT NULL,
+	[COD_BARRIO] [numeric](4, 0) NOT NULL,
+	[COD_OTRAS_SENAS] [numeric]identity(1,1) NOT NULL,
+	[COD_ID_PERSONA] [int] NOT NULL,
+	[DSC_OTRAS_SENAS] [nvarchar](255) NULL,
+	[LOG_ACTIVO] [numeric](1, 0) NULL,
+ CONSTRAINT [PK_OTRAS_SENAS] PRIMARY KEY CLUSTERED 
+(
+	[COD_PROVINCIA] ASC,
+	[COD_CANTON] ASC,
+	[COD_DISTRITO] ASC,
+	[COD_BARRIO] ASC,
+	[COD_OTRAS_SENAS] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[OTRAS_SENAS] WITH CHECK ADD  CONSTRAINT [FK_OTRAS_SENAS] FOREIGN KEY([COD_PROVINCIA], [COD_CANTON], [COD_DISTRITO],[COD_BARRIO])
+REFERENCES [dbo].[BARRIO] ([COD_PROVINCIA], [COD_CANTON], [COD_DISTRITO],[COD_BARRIO])
+GO
+
+ALTER TABLE [dbo].[OTRAS_SENAS] CHECK CONSTRAINT [FK_OTRAS_SENAS]
+GO
+
 
 ------------------------------Primary key-----------------------------------------------
 Go
@@ -159,16 +230,6 @@ Go
 alter table Telefono add constraint Telefonos_PK primary key(id_telefono)
 Go
 alter table Tipo_Telefonos add constraint Tipo_Telefonos_PK primary key(id_tipo_telefono)
-Go
-alter table Provincia add constraint Provincia_PK primary key(id_prov)
-Go
-alter table Canton add constraint Canton_PK primary key(id_prov,id_can)
-Go
-alter table Distrito add constraint Distrito_PK primary key(id_prov,id_can,id_dis)
-Go
-alter table Barrio add constraint Barrio_PK primary key (id_prov,id_can,id_dis,id_bar)
-Go
-alter table Otra_senas add constraint Otra_senas_PK primary key (id_prov,id_can,id_dis,id_bar,id_otras)
 
 ------------------------------Foreign key--------------------------------
 Go
@@ -176,15 +237,7 @@ alter table Usuario add constraint Persona_Usuario_FK foreign key (id_persona) r
 Go
 alter table Admision add constraint Persona_Admision_FK foreign key (id_persona) references Persona(id_persona)
 Go
-alter table Canton add constraint Canton_Provincia_FK foreign key (id_prov) references Provincia(id_prov)
-Go
-alter table Distrito add constraint Distrito_Canton_FK foreign key (id_prov,id_can) references Canton(id_prov,id_can)
-Go
-alter table Barrio add constraint Barrio_Distrito_FK foreign key (id_prov,id_can,id_dis) references Distrito(id_prov,id_can,id_dis)
-Go
-alter table Otra_senas add constraint Otra_senas_Barrio_FK foreign key (id_prov,id_can,id_dis,id_bar) references Barrio(id_prov,id_can,id_dis,id_bar)
-Go
-alter table Otra_senas add constraint Otra_senas_Persona_FK foreign key (id_persona) references Persona(id_persona)
+alter table [dbo].[OTRAS_SENAS] add constraint Otra_senas_Persona_FK foreign key ([COD_ID_PERSONA]) references Persona(id_persona)
 Go
 alter table Telefono add constraint Persona_Telefono_FK foreign key (id_persona) references Persona(id_persona)
 Go
@@ -199,3 +252,16 @@ Go
 alter table Acciones_Detalles_Admision add constraint Acciones_Detalles_Admision_Detalle_Admision_FK foreign key (id_detalle) references Detalle_Admision(id_detalle)
 Go
 alter table Acciones_Detalles_Admision add constraint Acciones_Detalles_Admision_AccionAfirmativa_FK foreign key (id_accionafirmativa) references AccionAfirmativa(id_accionafirmativa)
+
+
+insert into persona values (117030746,'Kevin','Paniagua','Herrera',' 10/03/98',22,'kevinpaniagua410@gmail.com')
+
+insert into perfil values(1,'Registro',1)
+insert into perfil values(2,'Aspirante',1)
+
+insert into Usuario values(117030746,117030746,'kevinpaniagua410@gmail.com','123456','123456',1)
+
+insert into Usuario_Perfil values (117030746,1)
+
+
+select * from Usuario_Perfil
