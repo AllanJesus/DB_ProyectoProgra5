@@ -12,6 +12,12 @@ create table Admision
 	estado varchar(50) 
 );
 
+insert into admision values (117030746,70,80,1)
+insert into admision values (113580440,80,7,1)
+
+insert into persona values (117030746,'Kevin','Paniagua','Herrera','10/03/1998',22,'kevinpaniagua410@gmail.com') 
+insert into persona values (113580440,'Allan','Quesada','Fuentes','11/07/1988',32,'allan@gmail.com') 
+
 Go
 create table Detalle_Admision
 (
@@ -63,6 +69,7 @@ create table Usuario
 );
 
 select * from Persona
+
 select * from Usuario
 
 Go
@@ -123,16 +130,13 @@ CREATE TABLE [dbo].[CANTONES](
 ) ON [PRIMARY]
 
 GO
-
 ALTER TABLE [dbo].[CANTONES]  WITH CHECK ADD  CONSTRAINT [FK_CANTONES_PROVINCIAS] FOREIGN KEY([COD_PROVINCIA])
 REFERENCES [dbo].[PROVINCIAS] ([COD_PROVINCIA])
-GO
 
+GO
 ALTER TABLE [dbo].[CANTONES] CHECK CONSTRAINT [FK_CANTONES_PROVINCIAS]
+
 GO
-
-
-
 CREATE TABLE [dbo].[DISTRITOS](
 	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
 	[COD_CANTON] [numeric](2, 0) NOT NULL,
@@ -256,6 +260,7 @@ Go
 alter table Acciones_Detalles_Admision add constraint Acciones_Detalles_Admision_AccionAfirmativa_FK foreign key (id_accionafirmativa) references AccionAfirmativa(id_accionafirmativa)
 
 
+--------------------------------------------INSERTS NECESARIOS----------------------------------------------------
 go
 insert into perfil values(1,'Registro',1)
 go
@@ -267,6 +272,7 @@ insert into Usuario_Perfil values (117030746,1)
 select * from Usuario
 select * from Persona
 select * from Usuario_Perfil
+select * from Perfil
 --------------------------------------------STORED PROCEDURES----------------------------------------------------
 GO
 CREATE PROCEDURE SP_SeleccionarUsuarioPorID
@@ -284,4 +290,57 @@ CREATE PROCEDURE SP_SeleccionarUsuario_PerfilPorID
 AS 
  	Select id_usuario ,id_perfil  from Usuario_Perfil
 	Where (id_usuario =  @ID);
+
+	exec SP_SeleccionarUsuario_PerfilPorID 12345678
+
+	select * from Perfil
+------------------------------------------------------------------------------------------------
+
+GO
+CREATE PROCEDURE SP_ActualizarUsuario
+ (@id_usuario int,@correo varchar(50),@contrasena varchar(50),@estado bit)
+AS  
+ 	Update  Usuario
+	Set	correo =  @correo,
+	contrasena =  @contrasena,
+	estado =  @estado  
+	Where (id_usuario =  @id_usuario);
+Go
+
+exec SP_ActualizarPersona 11111110,Kevin,Paniagua,Herrera,'03/10/98',1,'kevin@gmail.com'
+------------------------------------------------------------------------------------------------
+	GO
+CREATE PROCEDURE SP_ActualizarPersona
+ (@id_persona int,@nombre varchar(50),@apellido1 varchar(50),@apellido2 varchar(50),
+ @fecha_nacimiento Date,@edad int,@correo varchar(50))
+AS  
+ 	Update  Persona
+	Set	nombre =  @nombre,
+	apellido1 =  @apellido1,
+	apellido2 =  @apellido2,
+	fecha_nacimiento =  @fecha_nacimiento,
+	edad =  @edad,
+	correo =  @correo
+	Where (id_persona =  @id_persona);
+Go
+------------------------------------------------------------------------------------------------
+Go
+CREATE PROCEDURE SP_SeleccionarPersonaPorID
+(@ID int)
+AS 
+ 	Select id_persona ,nombre, apellido1 ,apellido2,fecha_nacimiento,edad,correo from Persona
+	Where (id_persona =  @ID);
+------------------------------------------------------------------------------------------------
+
+
+create table Persona
+(
+	id_persona int not null,
+	nombre varchar(50),
+	apellido1 varchar(50), 
+	apellido2 varchar(50),
+	fecha_nacimiento Date,
+	edad int,
+	correo varchar(50)
+);
 
