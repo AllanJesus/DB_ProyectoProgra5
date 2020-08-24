@@ -5,7 +5,7 @@ set dateformat dmy
 Go
 create table Admision
 (
-	id_admision int identity(1,1) not null, 
+	id_admision int not null, 
 	id_persona int,
 	nota float,
 	promedio float,
@@ -24,19 +24,18 @@ create table Detalle_Admision
 Go
 create table AccionAfirmativa
 (
-	id_accionafirmativa int identity(1,1) not null,
+	id_accionafirmativa numeric(2,0) not null,
 	puntos int,
-	Poblaciones varchar,
-	Documentos varchar,
-	lugar varchar,
-	descripcion varchar (50)not null
+	Poblaciones varchar(255),
+	Documentos varchar(255),
+	lugar varchar(255)
 );
 
 Go
 create table Acciones_Detalles_Admision
 (
 	id_detalle int  not null,
-	id_accionafirmativa int not null
+	id_accionafirmativa numeric(2,0) not null
 );
 
 Go
@@ -59,9 +58,12 @@ create table Usuario
 	id_usuario int not null,
 	id_persona int,
 	correo varchar(50)not null,
-	contraseña varchar(50)not null,
+	contrasena varchar(50)not null,
 	estado bit 
 );
+
+select * from Persona
+select * from Usuario
 
 Go
 create table Usuario_Perfil
@@ -254,14 +256,32 @@ Go
 alter table Acciones_Detalles_Admision add constraint Acciones_Detalles_Admision_AccionAfirmativa_FK foreign key (id_accionafirmativa) references AccionAfirmativa(id_accionafirmativa)
 
 
-insert into persona values (117030746,'Kevin','Paniagua','Herrera',' 10/03/98',22,'kevinpaniagua410@gmail.com')
-
+go
 insert into perfil values(1,'Registro',1)
+go
 insert into perfil values(2,'Aspirante',1)
-
-insert into Usuario values(117030746,117030746,'kevinpaniagua410@gmail.com','123456','123456',1)
 
 insert into Usuario_Perfil values (117030746,1)
 
 
+select * from Usuario
+select * from Persona
 select * from Usuario_Perfil
+--------------------------------------------STORED PROCEDURES----------------------------------------------------
+GO
+CREATE PROCEDURE SP_SeleccionarUsuarioPorID
+(@ID int)
+AS 
+ 	Select id_usuario ,id_persona, correo ,contrasena,estado  from Usuario
+	Where (id_usuario =  @ID);
+
+	exec SP_SeleccionarUsuarioPorID 12345678
+
+------------------------------------------------------------------------------------------------
+GO
+CREATE PROCEDURE SP_SeleccionarUsuario_PerfilPorID
+(@ID int)
+AS 
+ 	Select id_usuario ,id_perfil  from Usuario_Perfil
+	Where (id_usuario =  @ID);
+
