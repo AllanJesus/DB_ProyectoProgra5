@@ -12,12 +12,6 @@ create table Admision
 	estado varchar(50) 
 );
 
-insert into admision values (117030746,70,80,1)
-insert into admision values (113580440,80,7,1)
-
-insert into persona values (117030746,'Kevin','Paniagua','Herrera','10/03/1998',22,'kevinpaniagua410@gmail.com') 
-insert into persona values (113580440,'Allan','Quesada','Fuentes','11/07/1988',32,'allan@gmail.com') 
-
 Go
 create table Detalle_Admision
 (
@@ -55,8 +49,6 @@ create table Persona
 	edad int,
 	correo varchar(50)
 );
-
-insert into Persona values (id_persona, nombre, apellido1, apellido2, fecha_nacimiento, edad,correo)
 
 Go
 create table Usuario
@@ -102,8 +94,6 @@ create table Tipo_Telefonos
 	id_tipo_telefono int not null,
 	descripcion varchar (50)
 );
-
-
 
 CREATE TABLE [dbo].[PROVINCIAS](
 	[COD_PROVINCIA] [numeric](1, 0) NOT NULL,
@@ -265,14 +255,6 @@ go
 insert into perfil values(1,'Registro',1)
 go
 insert into perfil values(2,'Aspirante',1)
-
-insert into Usuario_Perfil values (117030746,1)
-
-
-select * from Usuario
-select * from Persona
-select * from Usuario_Perfil
-select * from Perfil
 --------------------------------------------STORED PROCEDURES----------------------------------------------------
 GO
 CREATE PROCEDURE SP_SeleccionarUsuarioPorID
@@ -331,16 +313,4 @@ AS
  	Select id_persona ,nombre, apellido1 ,apellido2,fecha_nacimiento,edad,correo from Persona
 	Where (id_persona =  @ID);
 ------------------------------------------------------------------------------------------------
-
-
-create table Persona
-(
-	id_persona int not null,
-	nombre varchar(50),
-	apellido1 varchar(50), 
-	apellido2 varchar(50),
-	fecha_nacimiento Date,
-	edad int,
-	correo varchar(50)
-);
 
